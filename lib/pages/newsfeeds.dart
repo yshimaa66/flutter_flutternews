@@ -1,5 +1,8 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_flutternews/widgets/header.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:http/http.dart' as http;
 import '../constants/constant.dart';
 import 'dart:async';
@@ -9,72 +12,98 @@ import 'description.dart';
 import 'dart:io';
 
 
-class NewsFeedPage extends StatelessWidget {
+class NewsFeedPage extends StatefulWidget {
   static String tag = "NewsFeedPage-tag";
   NewsFeedPage(this.category);
   final String category;
+  Isolate _isolate;
+
+  @override
+  _NewsFeedPageState createState() => _NewsFeedPageState();
+}
+
+class _NewsFeedPageState extends State<NewsFeedPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
 
 
-    fetchdatawidget(){
-      return Scaffold(
-          key: _scaffoldKey,
-          appBar: header(context,titletext:"$category"),
-          body:  new SafeArea(
-              child: new Column(
-                children: [
-                  new Expanded(
-                    flex: 1,
-                    child: new Container(
-                        width: width,
-                        color: Colors.blue[100],
-                        child: new GestureDetector(
-                          child: FutureBuilder<List<News>>(
-                            future: fatchNews(
-                                http.Client(), category), // a Future<String> or null
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) print(snapshot.error);
-
-                              return snapshot.hasData
-                                  ? NewsList(news: snapshot.data)
-                                  : Center(child: CircularProgressIndicator());
-                            },
-                          ),
-                        )),
-                  ),
-                ],
-              )),
-      );
-
-    }
+  @override
+  void initState() {
+    super.initState();
+    updating_isolate();
+  }
 
 
-    void showInSnackBar(String value) {
-      _scaffoldKey.currentState.showSnackBar(
-          SnackBar(content: Text(value,
-            textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0, fontWeight:
-            FontWeight.bold,color: Colors.white),), duration: Duration(seconds: 2), backgroundColor: Colors.blue,)
-      );
-    }
 
-    update(){
+  void showInSnackBar(String value) {
+    _scaffoldKey.currentState.showSnackBar(
+        SnackBar(content: Text(value,
+          textAlign: TextAlign.center, style: TextStyle(fontSize: 12.0, fontWeight:
+          FontWeight.bold,color: Colors.white),), duration: Duration(seconds: 2), backgroundColor: Colors.blue,)
+    );
+  }
 
 
-      fetchdatawidget();
+  update(){
 
-      showInSnackBar("Updated");
+    fetchdatawidget();
 
-      print("updated");
+    showInSnackBar("updated");
 
-    }
+  }
+
+  checktimer(){
 
     const tenSeconds = const Duration(seconds: 10);
     Timer.periodic(tenSeconds, (Timer t) => update());
 
+  }
+
+  updating_isolate() async {
+
+    await FlutterIsolate.spawn(checktimer(), print("updated"));
+  }
+
+
+  fetchdatawidget(){
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: header(context,titletext:"${widget.category}"),
+      body:  new SafeArea(
+          child: new Column(
+            children: [
+              new Expanded(
+                flex: 1,
+                child: new Container(
+                    width:  MediaQuery.of(context).size.width,
+                    color: Colors.blue[100],
+                    child: new GestureDetector(
+                      child: FutureBuilder<List<News>>(
+                        future: fatchNews(
+                            http.Client(), widget.category), // a Future<String> or null
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) print(snapshot.error);
+
+                          return snapshot.hasData
+                              ? NewsList(news: snapshot.data)
+                              : Center(child: CircularProgressIndicator());
+                        },
+                      ),
+                    )),
+              ),
+            ],
+          )),
+    );
+
+  }
+
+
+
+  Widget build(BuildContext context) {
+
+
     return fetchdatawidget();
+
   }
 }
 

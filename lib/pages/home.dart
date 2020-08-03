@@ -1,4 +1,8 @@
+import 'dart:isolate';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_flutternews/helper/get_categories.dart';
+import 'package:flutter_flutternews/model/category_model.dart';
 import 'package:flutter_flutternews/widgets/header.dart';
 
 import 'newsfeeds.dart';
@@ -7,6 +11,12 @@ void main() => runApp(new HomePage());
 
 class HomePage extends StatelessWidget {
   static String tag = 'home-page';
+
+
+
+  List<CategoryModel> categoriesList =  getCategories();
+
+
 
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -19,68 +29,13 @@ class HomePage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Center(
-              child: new ListView(
-                children: [
-                  Center(
-                    child: GestureDetector(
-                    onTap: (){
-
-                      var category = "Business";
-                      Navigator.push(
-                          context,
-                          new MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                            new NewsFeedPage(category),
-                          ));
-          },
-              child: Container(
-
-                    child: Stack(
-                      children: <Widget>[
-                       Container(
-                         width: MediaQuery.of(context).size.width * 0.8,
-                         height: 200,
-                         decoration: BoxDecoration(
-                           image: const DecorationImage(
-                             image: AssetImage("assets/business.jpeg"),
-                             fit: BoxFit.cover,
-                           ),
-                           border: Border.all(
-                             color: Colors.black,
-                             width: 2,
-                           ),
-                           borderRadius: BorderRadius.circular(12),
-                         ),
-
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.of(context).size.width * 0.8,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            color: Colors.black26, // if we use decoration color should inside the decoration
-                          ),
-                          child: Text(
-                            "Business",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-              ),
-          ),
-                  ),
-
-                  Center(
+              child: new ListView.builder(
+                itemCount: categoriesList.length,
+                itemBuilder: (context, position) {
+                  return  Center(
                     child: GestureDetector(
                       onTap: (){
-
-                        var category = "Entertainment";
+                        var category = categoriesList[position].categoryName;
                         Navigator.push(
                             context,
                             new MaterialPageRoute(
@@ -96,8 +51,8 @@ class HomePage extends StatelessWidget {
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 height: 200,
                                 decoration: BoxDecoration(
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/entertainment.png"),
+                                  image:  DecorationImage(
+                                    image: AssetImage(categoriesList[position].imageUrl),
                                     fit: BoxFit.cover,
                                   ),
                                   border: Border.all(
@@ -117,7 +72,7 @@ class HomePage extends StatelessWidget {
                                   color: Colors.black26, // if we use decoration color should inside the decoration
                                 ),
                                 child: Text(
-                                  "Entertainment",
+                                  categoriesList[position].categoryName,
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 30,
@@ -129,279 +84,8 @@ class HomePage extends StatelessWidget {
                           )
                       ),
                     ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: (){
-
-                        var category = "General";
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                              new NewsFeedPage(category),
-                            ));
-                      },
-                      child: Container(
-
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/general.png"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: Colors.black26, // if we use decoration color should inside the decoration
-                                ),
-                                child: Text(
-                                  "General",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: (){
-
-                        var category = "Health";
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                              new NewsFeedPage(category),
-                            ));
-                      },
-                      child: Container(
-
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/health.jpg"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: Colors.black26, // if we use decoration color should inside the decoration
-                                ),
-                                child: Text(
-                                  "Health",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: (){
-
-                        var category = "Science";
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                              new NewsFeedPage(category),
-                            ));
-                      },
-                      child: Container(
-
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/science.jpg"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: Colors.black26, // if we use decoration color should inside the decoration
-                                ),
-                                child: Text(
-                                  "Science",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ),
-
-                  Center(
-                    child: GestureDetector(
-                      onTap: (){
-
-                        var category = "Sports";
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                              new NewsFeedPage(category),
-                            ));
-                      },
-                      child: Container(
-
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/sport.png"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: Colors.black26, // if we use decoration color should inside the decoration
-                                ),
-                                child: Text(
-                                  "Sports",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: GestureDetector(
-                      onTap: (){
-
-                        var category = "Technology";
-                        Navigator.push(
-                            context,
-                            new MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                              new NewsFeedPage(category),
-                            ));
-                      },
-                      child: Container(
-
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  image: const DecorationImage(
-                                    image: AssetImage("assets/technology.png"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  border: Border.all(
-                                    color: Colors.black,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: Colors.black26, // if we use decoration color should inside the decoration
-                                ),
-                                child: Text(
-                                  "Technology",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ),
