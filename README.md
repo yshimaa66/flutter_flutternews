@@ -19,4 +19,4 @@ It's News Flutter Mobile Application using APIs with these features:
 
 
 
-<img src="https://github.com/yshimaa66/flutter_flutternews/blob/master/ezgif.com-video-to-gif%20(1).gif" width="500" height="800">
+<img src="https://github.com/yshimaa66/flutter_flutternews/blob/master/ezgif.com-video-to-gif%20(2).gif" width="500" height="800">
